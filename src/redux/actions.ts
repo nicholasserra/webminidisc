@@ -498,8 +498,9 @@ export function downloadTracks(
                 }))!;
                 let fileName = createDownloadTrackName(track);
                 if (convertOutputToWav) {
-                    data = await convertToWAV(data, track);
-                    fileName = fileName.slice(0, -3) + 'wav';
+                    let wavData = await convertToWAV(data, track);
+                    let wavFileName = fileName.slice(0, -3) + 'wav';
+                    callback(new Blob([wavData], { type: 'application/octet-stream' }), wavFileName);
                 }
                 callback(new Blob([data], { type: 'application/octet-stream' }), fileName);
             } catch (err) {

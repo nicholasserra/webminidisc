@@ -19,7 +19,8 @@ import { actions as appStateActions } from '../redux/app-feature';
 import { actions as contextMenuActions } from '../redux/context-menu-feature';
 
 import { DeviceStatus } from 'netmd-js';
-import { control, openLocalLibrary } from '../redux/actions';
+
+import { control, downloadTracks, openLocalLibrary } from '../redux/actions';
 
 import { formatTimeFromSeconds, getGroupedTracks, getSortedTracks, isSequential, acceptedTypes, AdaptiveFile, bytesToHumanReadable } from '../utils';
 import { belowDesktop, forAnyDesktop, useShallowEqualSelector, themeSpacing, batchActions } from '../frontend-utils';
@@ -36,6 +37,7 @@ import Backdrop from '@mui/material/Backdrop';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import EjectIcon from '@mui/icons-material/Eject';
 import DoneIcon from '@mui/icons-material/Done';
+import CycloneIcon from '@mui/icons-material/Cyclone';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -467,6 +469,10 @@ export const Main = (props: {}) => {
         [dispatch, deviceStatus]
     );
 
+    const handleStartArchive = function () {
+        dispatch(downloadTracks(tracks.map((t) => t.index), true));
+    };
+
     const canGroup = useMemo(() => {
         return (
             tracks.filter((n) => n.group === null && selected.includes(n.index)).length === selected.length &&
@@ -593,6 +599,9 @@ export const Main = (props: {}) => {
                     [classes.toolbarHighlight]: selectedCount > 0 || selectedGroupsCount > 0,
                 })}
             >
+                <IconButton aria-label="actions" aria-controls="actions-menu" aria-haspopup="true" onClick={handleStartArchive}>
+                    <CycloneIcon />
+                </IconButton>
                 {selectedCount > 0 || selectedGroupsCount > 0 ? (
                     <Checkbox
                         indeterminate={selectedCount > 0 && selectedCount < tracks.length}
